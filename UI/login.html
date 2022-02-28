@@ -1,0 +1,150 @@
+<html>
+
+<head>
+    <title>
+        Medical Stock Management System
+    </title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Data Table CSS and JS-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.css">
+
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
+
+    <!-- Self JS -->
+    <script src="includes\js\medical.js"></script>
+
+    <!-- self css -->
+    <link rel="stylesheet" href="includes/css/medical.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 offset-3">
+                    <div class="pt-5">
+                        <div class="global-container">
+                            <div class="card login-form">
+                                <div class="card-body">
+                                    <h3 class="card-title text-center">Login Here</h3><br>
+                                    <div class="card-text">
+                                        <!-- <form> -->
+                                        <div class="form-group">
+                                            <label for="username">Username </label>
+                                            <input type="text" class="form-control" id="username" name="username"
+                                                placeholder="Enter username" required>
+                                            <span class="error text-danger usernameError">&nbsp;</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="password">Password </label>
+                                            <a href="" onClick="alert('Please Contact Admin');"
+                                                style="float:right;font-size:12px;"> Forgot password? </a>
+                                            <input type="password" class="form-control" id="password" name="password"
+                                                placeholder="Enter Password" required>
+                                            <span class="error text-danger passwordError">&nbsp; </span>
+                                        </div>
+                                        <div class="sign-up">
+                                            Don't have an account? <a href="register.html"> Register Here </a>
+                                        </div>
+                                        <div class="float-right">
+                                            <button type="reset" class="btn btn-danger btnClear">Clear</button>
+                                            <button onclick="login()" class="btn btn-primary btnSubmit">Login</button>
+                                        </div>
+                                        <!-- </form> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- FOOTER  -->
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <span>Medical Stock Management system</span>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
+
+<script>
+    $(document).ready(function () {
+        if (localStorage.getItem('jwtToken') != null) {
+            location.href = 'index.html';
+        }
+    });
+
+    function login() {
+        var username = $('#username').val();
+        var password = $('#password').val();
+        var error = false;
+
+        if (username.length < 4) {
+            $('#username').css('border-color', 'red');
+            $('.usernameError').html("Username is too short");
+            error = true;
+        } else {
+            $('#username').css('border-color', 'green');
+            $('.usernameError').html("");
+        }
+        if (password.length < 4) {
+            $('#password').css('border-color', 'red');
+            $('.passwordError').html("Password is too short.");
+            error = true;
+        } else {
+            $('#password').css('border-color', 'green');
+            $('.passwordError').html("");
+        }
+
+        if (!error) {
+            $.ajax({
+                type: 'POST',
+                url: "http://localhost:8000/login",
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    userName: username,
+                    password: password
+                }),
+                success: function (data) {
+                    console.log(data);
+                    if (data.status == 200) {
+                        alert("Login Success!");
+                        //save jwt token to local storage
+                        localStorage.setItem("isLogin", data.isLogin);
+                        localStorage.setItem("username", data.username);
+                        location.href = 'index.html';
+
+                    } else if (data.status == 404) {
+                        $('.passwordError').html(data.msg);
+                    }
+
+                }
+            });
+        }
+
+    }
+</script>
