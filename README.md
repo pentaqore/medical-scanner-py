@@ -1,10 +1,17 @@
 # medical-scanner-py
 Medical inventory management using python
 
+---------------------
+
 Prerequisites:
 Install Python
+Setup mysql on locahost and port 3306
+Create Database with name 'medicalscannar'
+
+---------------------
 
 How To Run Project:
+
 A. Run BackEnd
 1. Navitage to /medical-scanner-py/medical-scanner-py folder and open command prompt in it
 2. Enter command: Scripts/activate
@@ -22,6 +29,9 @@ B. run Front end(UI)
 2. Enter command: python -m http.server 9000
 
 This will start front end on localhost:9000
+
+
+---------------------
 
 Now open any browser and visit localhost:9000
 

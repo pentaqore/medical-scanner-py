@@ -75,3 +75,29 @@ class ItemOperations(View):
             jsonObj = Items.toJSON(item)
             data.append(jsonObj)
         return JsonResponse(data, status=200, safe=False)
+
+    def post(self, request):
+
+        print(request.body)
+        data = json.loads(request.body.decode("utf-8"))
+        name = data.get('name')
+        available_quantity = data.get('available_quantity')
+        rate = data.get('rate')
+        content = data.get('content')
+        type = data.get('type')
+
+        itemData = {
+            'name': name,
+            'available_qunatity': available_quantity,
+            'rate': rate,
+            'content': content,
+            'type': type,
+        }
+
+        item = Items.objects.create(**itemData)
+
+        data = {
+            "message": f"Item added Successfully with name: {item.name}",
+            "status": 201
+        }
+        return JsonResponse(data, status=201)
