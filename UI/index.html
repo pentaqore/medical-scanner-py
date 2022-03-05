@@ -163,7 +163,11 @@
                     <div class="global-container">
                         <div class="card col-sm col-10">
                             <div class="card-body">
-
+                                <div class="form-group ">
+                                    <div class="col-8">
+                                        <input type="number" class="form-control" id="id" hidden>
+                                    </div>
+                                </div>
 
                                 <div class="form-group row">
                                     <label class="col-4" for="content">Name </label>
@@ -296,9 +300,6 @@
                 $('.contentwordError').html("");
                 error = false;
             }
-
-
-
 
             if (rate > 100000) {
                 $('#rate').css('border-color', 'red');

@@ -87,9 +87,6 @@ class ItemsOperations(View):
 @method_decorator(csrf_exempt, name='dispatch')
 class ItemOperations(View):
     def post(self, request):
-        
-        
-        
         data = json.loads(request.body.decode("utf-8"))
         print(data)
         name = data.get('name')
@@ -131,11 +128,14 @@ class ItemOperations(View):
         return JsonResponse(items, status=200, safe=False)
 
     def delete(self, request):
-        id = request.GET.get('id', None)
+        data = json.loads(request.body.decode("utf-8"))
+        print(data)
+        id = data.get('id')
 
         items = Items.objects.filter(id=id).delete()
 
         data = {
+            
             'msg': 'Delete Success',
             'status': 200
         }

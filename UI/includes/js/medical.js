@@ -97,18 +97,74 @@ function fetchFranchiseTableData() {
             });
 
             $('#btn-delete').click(function () {
+                deleteMedicine(selected);
+            });
 
-                deleteRecord(selected);
+            $('#btn-edit').click(function () {
+                // updateMedicine(selected);
             });
         },
         error: function (result) {
             console.log(result);
         }
     });
+}
+function deleteMedicine(selectedRecords) {
+
+    var medicine = selectedRecords[0];
+
+    $.ajax({
+        url: "http://localhost:8000/item",
+        type: 'DELETE',
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(
+            { id: parseInt(medicine.id) }),
+        success: function (data) {
+            console.log(data);
+            console.log("INSIDE DELETE MEDICINE ");
+            if (data.status == 200) {
+
+                //save jwt token to local storage
+                location.href = 'index.html';
+            } else if (data.status == 404) {
+                $('.nameError').html(data.message);
+            } else {
+                if (data.status == 201) {
+                    location.href = 'index.html';
+                }
+            }
+        }
+    });
 
 
-    function deleteRecord(selectedRecords) {
-        console.log("INSIDE DELETE ROW", selectedRecords)
-    }
+}
+function updateMedicine(selectedRecords) {
+    console.log("INSIDE DELETE ROW", selectedRecords)
+    var medicine = selectedRecords[0].id;
+
+    $.ajax({
+        url: "http://localhost:8000/item",
+        type: 'DELETE',
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(medicine),
+        success: function (data) {
+            console.log(data);
+            console.log("INSIDE DELETE MEDICINE ");
+            if (data.status == 200) {
+
+                //save jwt token to local storage
+                // location.href = 'index.html';
+            } else if (data.status == 404) {
+                $('.nameError').html(data.message);
+            } else {
+                if (data.status == 201) {
+                    // location.href = 'index.html';
+                }
+            }
+        }
+    });
+
 
 }
