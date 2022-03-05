@@ -114,10 +114,16 @@
 
 
         <div class="row">
+
             <div class="col-sm-12 px-5 py-0">
                 <span class="font-weight-bold h3">All Medicines</span>
-                <button class="btn btn-primary float-right" data-toggle="modal" data-target="#newMedicine">New
-                    Medicine</button>
+                <div class="float-right">
+                    <button id="btn-add" class="btn btn-primary " data-toggle="modal" data-target="#newMedicine">New
+                        Medicine</button>
+                    <button id="btn-edit" class="btn btn-success  " data-toggle="modal"
+                        data-target="#newMedicine">Edit</button>
+                    <button id="btn-delete" class="btn btn-danger " data-toggle="modal">Delete</button>
+                </div>
             </div>
             <div class="col-sm-12  px-5 py-3">
 
@@ -130,13 +136,9 @@
                             <th>Rate</th>
                             <th>Contents</th>
                             <th>Type</th>
-                            <th>Action
-
-                            </th>
-
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="dash-table">
 
                     </tbody>
 
@@ -156,67 +158,67 @@
                         <h4 class="modal-title">Add New Medicine</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
-
-
                     <!-- Modal body -->
-                    <div class="modal-body container">
-                        <div class="row">
-                            <div class="col-sm">
-                                <div class="pt-1">
-                                    <div class="global-container">
-                                        <div class="card col-sm">
-                                            <div class="card-body">
-                                                <div class="card-text">
-                                                    <!-- <form> -->
-                                                    <div class="form-group">
-                                                        <label for="content">Name </label>
-                                                        <input type="text" class="form-control" id="name" name="name"
-                                                            placeholder="Enter name">
-                                                        <span class="error text-danger nameError">&nbsp; </span>
-                                                    </div>
 
-                                                    <div class="form-group">
-                                                        <label for="content">Available quantity </label>
-                                                        <input type="text" class="form-control" id="available_quantity"
-                                                            name="content" placeholder="Enter available quantity">
-                                                        <span class="error text-danger available_quantityError">&nbsp;
-                                                        </span>
-                                                    </div>
+                    <div class="global-container">
+                        <div class="card col-sm col-10">
+                            <div class="card-body">
 
-                                                    <div class="form-group">
-                                                        <label for="content">Rate </label>
-                                                        <input type="text" class="form-control" id="rate" name="rate"
-                                                            placeholder="Enter rate in INR">
-                                                        <span class="error text-danger rateError">&nbsp; </span>
-                                                    </div>
 
-                                                    <div class="form-group">
-                                                        <label for="content">content </label>
-                                                        <input type="text" class="form-control" id="content"
-                                                            name="content" placeholder="Enter content">
-                                                        <span class="error text-danger contentwordError">&nbsp; </span>
-                                                    </div>
+                                <div class="form-group row">
+                                    <label class="col-4" for="content">Name </label>
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" id="name" name="name"
+                                            placeholder="Enter name">
+                                        <span class="error text-danger nameError">&nbsp; </span>
+                                    </div>
+                                </div>
 
-                                                    <div class="form-group">
-                                                        <label for="content">Type </label>
+                                <div class="form-group row">
+                                    <label class="col-4" for="content">Available quantity </label>
+                                    <div class="col-8">
+                                        <input type="number" class="form-control" id="available_quantity" name="content"
+                                            placeholder="Enter available quantity">
+                                        <span class="error text-danger available_quantityError">&nbsp;
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-4" for="content">Rate </label>
+                                    <div class="col-8">
+                                        <input type="number" class="form-control" id="rate" name="rate"
+                                            placeholder="Enter rate in INR">
+                                        <span class="error text-danger rateError">&nbsp; </span>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-4" for="content">content </label>
+                                    <div class="col-12">
+                                        <textarea type="textarea" class="form-control" id="content" name="content"
+                                            placeholder="Enter content"></textarea>
+                                        <span class="error text-danger contentwordError">&nbsp;
+                                        </span>
+                                    </div>
+                                </div>
 
-                                                        <select type="text" class="form-control" id="type" name="type"
-                                                            placeholder="Enter Type">
-                                                            <option value="t">Tablet</option>
-                                                            <option value="c">Capsule</option>
-
-                                                        </select>
-                                                        <span class="error text-danger typeError">&nbsp; </span>
-                                                    </div>
-                                                    <!-- </form> -->
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class="form-group row">
+                                    <label class="col-4" for="content">Type </label>
+                                    <div class="col-8">
+                                        <select type="text" class="form-control" id="type" name="type"
+                                            placeholder="Enter Type">
+                                            <option value="t">Tablet</option>
+                                            <option value="c">Capsule</option>
+                                            <option value="s">Syrup</option>
+                                            <option value="i">Injectible</option>
+                                        </select>
+                                        <span class="error text-danger typeError">&nbsp;
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
@@ -249,7 +251,7 @@
          */
         function addMedicine() {
             console.log("INSIDE ADD MEDICINE");
-            var id = 2;
+
             var name = $('#name').val();
             var available_quantity = $('#available_quantity').val();
             var content = $('#content').val();
@@ -259,50 +261,90 @@
             var jwtToken = localStorage.getItem('jwtToken');
             var error = false;
 
-            // if (name.length == 0) {
-            //     $('#name').css('border-color', 'red');
-            //     $('.nameError').html("Medicine name required ");
-            //     error = true;
-            // } else {
-            //     $('#name').css('border-color', 'green');
-            //     $('.nameError').html("");
-            // }
+            if (name.length == 0) {
+                console.log("name red");
+                $('#name').css('border-color', 'red');
+                $('.nameError').html("Medicine name required ");
+                error = true;
+            } else {
+                console.log("name green");
+                $('#name').css('border-color', 'green');
+                $('.nameError').html("");
+                error = false;
+            }
 
-            // if (!error) {
-            console.log(name,
-                available_quantity,
-                content,
-                rate,
-                type);
-            $.ajax({
-                url: "http://localhost:8000/items",
-                type: 'POST',
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({
-                    name: name,
-                    available_quantity: available_quantity,
-                    content: content,
-                    rate: rate,
-                    type: type
-                }),
-                success: function (data) {
-                    console.log(data);
-                    console.log("INSIDE ADD MEDICINE ");
-                    if (data.status == 200) {
 
-                        //save jwt token to local storage
-                        location.href = 'index.html';
-                    } else if (data.status == 404) {
-                        $('.nameError').html(data.message);
-                    } else {
-                        if (data.status == 201) {
+
+            if (isNaN(available_quantity)) {
+                $('#available_quantity').css('border-color', 'red');
+                $('.available_quantityError').html("Quantity must be a number");
+                error = true;
+            } else {
+                $('#available_quantity').css('border-color', 'green');
+                $('.available_quantityError').html("");
+                error = false;
+            }
+
+
+
+            if (content.length > 500) {
+                $('#content').css('border-color', 'red');
+                $('.contentwordError').html("Content is too large");
+                error = true;
+            } else {
+                $('#content').css('border-color', 'green');
+                $('.contentwordError').html("");
+                error = false;
+            }
+
+
+
+
+            if (rate > 100000) {
+                $('#rate').css('border-color', 'red');
+                $('.rateError').html("Rate must be smaller than 1 lack");
+                error = true;
+            } else {
+                $('#rate').css('border-color', 'green');
+                $('.rateError').html("");
+                error = false;
+            }
+
+            if (!error) {
+                console.log(name,
+                    available_quantity,
+                    content,
+                    rate,
+                    type);
+                $.ajax({
+                    url: "http://localhost:8000/item",
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        name: name,
+                        available_quantity: available_quantity,
+                        content: content,
+                        rate: rate,
+                        type: type
+                    }),
+                    success: function (data) {
+                        console.log(data);
+                        console.log("INSIDE ADD MEDICINE ");
+                        if (data.status == 200) {
+
+                            //save jwt token to local storage
                             location.href = 'index.html';
+                        } else if (data.status == 404) {
+                            $('.nameError').html(data.message);
+                        } else {
+                            if (data.status == 201) {
+                                location.href = 'index.html';
+                            }
                         }
                     }
-                }
-            });
-            // }
+                });
+            }
         }
     </script>
 </body>
