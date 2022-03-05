@@ -77,9 +77,11 @@ class ItemOperations(View):
         return JsonResponse(data, status=200, safe=False)
 
     def post(self, request):
-
-        print(request.body)
+        
+        
+        
         data = json.loads(request.body.decode("utf-8"))
+        print(data)
         name = data.get('name')
         available_quantity = data.get('available_quantity')
         rate = data.get('rate')
