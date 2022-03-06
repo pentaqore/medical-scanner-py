@@ -88,7 +88,18 @@ function fetchFranchiseTableData() {
              * Delete button Event
              */
             $('#btn-delete').click(function () {
-                $('#delete-med-confirmation').modal('toggle');
+
+                if (!table.$('tr.selected').hasClass('selected')) {
+                    $('#message-modal').modal('toggle');
+                    $('#message').html("Please select a product row for this operation !");
+                    $('#btn-ok').click(function () {
+                        location.href = 'index.html';
+                    });
+                } else {
+                    $('#delete-med-confirmation').modal('toggle');
+                }
+
+
             });
 
             /**
@@ -106,8 +117,16 @@ function fetchFranchiseTableData() {
              * Edit button Event
              */
             $('#btn-edit').click(function () {
-                $('#newMedicine').modal('toggle');
-                populateData(selected[0]);
+                if (!table.$('tr.selected').hasClass('selected')) {
+                    $('#message-modal').modal('toggle');
+                    $('#message').html("Please select a product row for this operation !");
+                    $('#btn-ok').click(function () {
+                        location.href = 'index.html';
+                    });
+                } else {
+                    $('#newMedicine').modal('toggle');
+                    populateData(selected[0]);
+                }
             });
         },
         error: function (result) {
