@@ -157,7 +157,7 @@ class ItemOperations(View):
         item = Items.objects.filter(id=id).update(name=name, available_qunatity=available_quantity, rate=rate, content=content, type=type)
 
         data = {
-            "message": f"Item Updated Successfully with id: {item}",
+            "message": f"Item Updated Successfully with name: {name}",
             "status": 200
         }
         return JsonResponse(data, status=200)

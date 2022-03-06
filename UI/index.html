@@ -227,15 +227,59 @@
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button type="reset" class="btn btn-danger">Clear</button>
+                        <button type="reset" onclick="clearFormFields()" class="btn btn-danger">Clear</button>
                         <button type="button" onclick="submit()" class="btn btn-primary">Submit</button>
                     </div>
 
                 </div>
             </div>
         </div>
+        <!-- DELETE CONFIRMATION MODAL -->
+        <div class="modal fade" id="delete-med-confirmation">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="global-container">
+                        <div class="card col-sm col-10">
+                            <div class="card-body">
+                                <label class="col" for="content">Do you realy want to delete this medicine</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button id="btn-cancel" type="reset" class="btn btn-secondary">Cancel</button>
+                        <button id="btn-delete-confirm" type="button" class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-
+        <!--  message MODAL -->
+        <div class="modal fade" id="message-modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="global-container">
+                        <div class="card col-sm col-10">
+                            <div class="card-body message-body">
+                                <b> <label id="message" for="content"></label></b>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button id="btn-ok" type="button" class="btn btn-success px-4">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
@@ -267,7 +311,7 @@
          */
         function addMedicine() {
             console.log("INSIDE ADD MEDICINE");
-
+            var message = "";
             var name = $('#name').val();
             var available_quantity = $('#available_quantity').val();
             var content = $('#content').val();
@@ -345,14 +389,23 @@
                         console.log(data);
                         console.log("INSIDE ADD MEDICINE ");
                         if (data.status == 200) {
-
+                            $('#newMedicine').hide();
+                            $('#message-modal').modal('toggle');
+                            $('#message').html(data.message);
+                            $('#btn-ok').click(function () {
+                                location.href = 'index.html';
+                            });
                             //save jwt token to local storage
-                            location.href = 'index.html';
                         } else if (data.status == 404) {
                             $('.nameError').html(data.message);
                         } else {
                             if (data.status == 201) {
-                                location.href = 'index.html';
+                                $('#newMedicine').hide();
+                                $('#message-modal').modal('toggle');
+                                $('#message').html(data.message);
+                                $('#btn-ok').click(function () {
+                                    location.href = 'index.html';
+                                });
                             }
                         }
                     }
@@ -446,19 +499,36 @@
                         console.log(data);
                         console.log("INSIDE ADD MEDICINE ");
                         if (data.status == 200) {
-
-                            //save jwt token to local storage
-                            location.href = 'index.html';
+                            $('#newMedicine').hide();
+                            $('#message-modal').modal('toggle');
+                            $('#message').html(data.message);
+                            $('#btn-ok').click(function () {
+                                location.href = 'index.html';
+                            });
                         } else if (data.status == 404) {
                             $('.nameError').html(data.message);
                         } else {
                             if (data.status == 201) {
-                                location.href = 'index.html';
+                                $('#newMedicine').hide();
+                                $('#message-modal').modal('toggle');
+                                $('#message').html(data.message);
+                                $('#btn-ok').click(function () {
+                                    location.href = 'index.html';
+                                });
                             }
                         }
                     }
                 });
             }
+        }
+
+        function clearFormFields() {
+            $('#id').val(null);
+            $('#name').val(null);
+            $('#available_quantity').val(null);
+            $('#content').val(null);
+            $('#rate').val(null);
+            $('#type').val(null);
         }
     </script>
 </body>
