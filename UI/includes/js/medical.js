@@ -4,32 +4,9 @@ $(document).ready(function () {
 });
 
 
-
 /**
- * Perform Crud operations
+ * Fetch all the records from server and populate it into DataTable
  */
-$(document).ready(function () {
-    // var table = $('#dashboardTable').DataTable();
-
-    // $('#dashboardTable tbody').on('click', 'tr', function () {
-    //     if ($(this).hasClass('selected')) {
-    //         $(this).removeClass('selected');
-    //     }
-    //     else {
-    //         table.$('tr.selected').removeClass('selected');
-    //         $(this).addClass('selected');
-    //     }
-    // });
-
-    // $('#btn-delete').click(function () {
-    //     // table.row('.selected').remove().draw(false);
-    //     console.log("INSIDE DELETE ROW", table.row('.selected').data)
-    // });
-});
-
-
-
-
 function fetchFranchiseTableData() {
 
     var isLogin = localStorage.getItem('isLogin');
@@ -41,10 +18,7 @@ function fetchFranchiseTableData() {
         contentType: "application/json; charset=utf-8",
         data: {},
         success: function (result) {
-            // data = [];
-            // data[0] = result;
             console.log(result);
-
             $('#dashboardTable').DataTable({
                 "data": result,
                 "destroy": true,
@@ -70,10 +44,10 @@ function fetchFranchiseTableData() {
             });
 
 
-
+            /**
+             * helps to took selected records
+             */
             $('#dashboardTable tbody').on('click', 'tr', function () {
-
-
                 var data = {
                     id: $(this).children("td:nth-child(1)").text(),
                     name: $(this).children("td:nth-child(2)").text(),
@@ -82,7 +56,6 @@ function fetchFranchiseTableData() {
                     content: $(this).children("td:nth-child(5)").text(),
                     type: $(this).children("td:nth-child(6)").text()
                 }
-
                 if (!$(this).hasClass('selected')) {
                     console.log("INSIDE DELETE ROW", $(this).hasClass('selected'))
                     selected.push(data);
@@ -95,13 +68,18 @@ function fetchFranchiseTableData() {
                 }
                 $(this).toggleClass('selected');
             });
-
+            /**
+             * Delete button Event
+             */
             $('#btn-delete').click(function () {
                 deleteMedicine(selected);
             });
-
+            /**
+             * Edit button Event
+             */
             $('#btn-edit').click(function () {
-                // updateMedicine(selected);
+                $('#newMedicine').modal('toggle');
+                populateData(selected[0]);
             });
         },
         error: function (result) {
@@ -109,6 +87,13 @@ function fetchFranchiseTableData() {
         }
     });
 }
+
+
+
+/**
+ *  Delete one record of medicine 
+ * @param Array of selectedRecords 
+ */
 function deleteMedicine(selectedRecords) {
 
     var medicine = selectedRecords[0];
@@ -139,32 +124,25 @@ function deleteMedicine(selectedRecords) {
 
 
 }
-function updateMedicine(selectedRecords) {
-    console.log("INSIDE DELETE ROW", selectedRecords)
-    var medicine = selectedRecords[0].id;
-
-    $.ajax({
-        url: "http://localhost:8000/item",
-        type: 'DELETE',
-        dataType: 'json',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(medicine),
-        success: function (data) {
-            console.log(data);
-            console.log("INSIDE DELETE MEDICINE ");
-            if (data.status == 200) {
-
-                //save jwt token to local storage
-                // location.href = 'index.html';
-            } else if (data.status == 404) {
-                $('.nameError').html(data.message);
-            } else {
-                if (data.status == 201) {
-                    // location.href = 'index.html';
-                }
-            }
-        }
-    });
 
 
+
+/**
+ * Populate the fields on medicine form
+ * 
+ * @param selectedRecord selectedRecord 
+ */
+
+function populateData(selectedRecord) {
+
+    var medicine = selectedRecord;
+
+    if (medicine) {
+        $('#id').val(medicine.id);
+        $('#name').val(medicine.name);
+        $('#available_quantity').val(medicine.available_qunatity);
+        $('#content').val(medicine.content);
+        $('#rate').val(medicine.rate);
+        $('#type').val(medicine.type);
+    }
 }

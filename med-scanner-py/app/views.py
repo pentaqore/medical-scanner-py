@@ -143,8 +143,9 @@ class ItemOperations(View):
 
     def put(self, request):
 
-        id = request.GET.get('id', None)
+        
         data = json.loads(request.body.decode("utf-8"))
+        id = data.get('id')
         name = data.get('name')
         available_quantity = data.get('available_quantity')
         rate = data.get('rate')
