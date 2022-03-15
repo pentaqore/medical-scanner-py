@@ -162,6 +162,28 @@
             </div>
         </div>
 
+        <!--  message MODAL -->
+        <div class="modal fade" id="message-modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="global-container">
+                        <div class="card col-sm col-10">
+                            <div class="card-body message-body">
+                                <b> <label id="message" for="content"></label></b>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button id="btn-ok" type="button" class="btn btn-success px-4">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
         <!-- Bill Generation MODAL -->
@@ -189,39 +211,45 @@
                                                 <!-- <div class="col "> -->
                                                 <div class="col text-left">
                                                     <p><strong>Customer Name: </strong>
-                                                    <p id="bill-cust-name"></p>
+                                                        <label id="bill-cust-name"></label>
                                                     </p>
                                                     <p><strong>Mobile Number: </strong>
-                                                    <p id="mob-number"></p>
+                                                        <label id="mob-number"></label>
                                                     </p>
                                                 </div>
                                                 <div class=" col text-center">
                                                     <p><strong>Invoice No: </strong>
-                                                    <p id="invo-id"></p>
+                                                        <label id="invo-id"></label>
                                                     </p>
                                                     <p><strong>Date:</strong>
-                                                    <p id="date"></p>
+                                                        <label id="date"></label>
                                                     </p>
                                                     <p>Pune</p>
                                                 </div>
                                                 <!-- </div> -->
                                             </div>
-                                            <div class="row">
-                                                <div class="col well invoice-body">
-                                                    <table id="billPrintTable"
-                                                        class="table table-striped table-bordered">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Medicine</th>
-                                                                <th>Type</th>
-                                                                <th>Rate</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="billPrint-table">
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                            <!-- <div class="row"> -->
+                                            <style>
+                                                div.dataTables_wrapper {
+                                                    width: 100% !important;
+                                                }
+                                            </style>
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-hover mx-auto w-auto"
+                                                    id="billPrintTable" style="width: 90vw;"
+                                                    class="table table-striped table-bordered ">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Medicine</th>
+                                                            <th>Type</th>
+                                                            <th>Rate</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="billPrint-table">
+                                                    </tbody>
+                                                </table>
                                             </div>
+                                            <!-- </div> -->
                                             <div class="row">
                                                 <div class="col text-right mt-2 mb-2">Signature</div>
                                             </div>

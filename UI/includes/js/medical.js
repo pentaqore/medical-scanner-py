@@ -171,8 +171,8 @@ function fetchBillTableData() {
             }
             console.log("RESULT", result);
             result = null;
-            resultTable = [{ id: 1, name: "Siddhu", mob_no: 9095968495, medicine: "patracetomol", type: "capsule", rate: 10, date: "15-03-2022" },
-            { id: 2, name: "Siddhu", mob_no: 9095968495, medicine: "patracetomol", type: "capsule", rate: 10, date: "15-03-2022" }];
+            resultTable = [{ id: 1, name: "ABC", mob_no: 9095968495, medicine: "patracetomol", type: "capsule", rate: 10, date: "15-03-2022" },
+            { id: 2, name: "DDRF", mob_no: 9095968495, medicine: "patracetomol", type: "capsule", rate: 10, date: "15-03-2022" }];
             console.log(result);
             $('#billTable').DataTable({
                 "data": resultTable,
@@ -230,23 +230,19 @@ function fetchBillTableData() {
              * Print button Event
              */
             $('#btn-print').click(function () {
-                $('#bill-generation').modal('toggle');
-                // if (!table.$('tr.selected').hasClass('selected')) {
-                //     $('#message-modal').modal('toggle');
-                //     $('#message').html("Please select a product row for this operation !");
-                //     $('#btn-ok').click(function () {
-                //         location.href = 'billing.html';
-                //     });
-                // } else {
-                //     $('#bill-generation').modal('toggle');
-                // }
-
-                $('#invo-id').val(selected[0].id);
-                $('#bill-cust-name').val(selected[0].name);
-                $('#mob-number').val(selected[0].mob_no);
-                $('#invo-id').val(selected[0].id);
-
-
+                if (selected.length != 0) {
+                    $('#bill-generation').modal('toggle');
+                    $('#invo-id').text(selected[0].id);
+                    $('#bill-cust-name').text(selected[0].name);
+                    $('#mob-number').text(selected[0].mob_no);
+                    $('#date').text(selected[0].date);
+                } else {
+                    $('#message-modal').modal('toggle');
+                    $('#message').html("Please select a product row for this operation !");
+                    $('#btn-ok').click(function () {
+                        location.href = 'billing.html';
+                    });
+                }
 
                 resultPrintTable = [{ medicine: "dddd", type: "cap", rate: 20 }]
 
@@ -254,54 +250,40 @@ function fetchBillTableData() {
                 for (let result of selected) {
                     resultPrintTable.push({ medicine: result.medicine, type: result.type, rate: result.rate })
                 }
-
+                console.log("result ", resultPrintTable)
+                //populate data in table  here
                 $('#billPrintTable').DataTable({
                     "data": resultPrintTable,
                     "destroy": false,
                     "paging": false,
                     "ordering": false,
                     "info": false,
-                    "search": false,
+                    searching: false,
+                    "autoWidth": false,
                     columns: [
                         { data: 'medicine' },
                         { data: 'type' },
                         { data: 'rate' }
                     ],
                 });
-
+                // $("#billPrintTable").css("width", "100%");
                 var table = $('#billPrintTable').DataTable();
-
-
             });
 
-            /**
-             * Delete confirmation button Event
-             */
-            $('#btn-delete-confirm').click(function () {
-                generateBill(selected[0]);
-            });
+            // /**
+            //  * Delete confirmation button Event
+            //  */
+            // $('#btn-delete-confirm').click(function () {
+            //     generateBill(selected[0]);
+            // });
 
-            $('#btn-cancel').click(function () {
-                location.href = 'index.html';
-            });
+            // $('#btn-cancel').click(function () {
+            //     location.href = 'index.html';
+            // });
             $('#btn-bill-cancel').click(function () {
                 location.href = 'billing.html';
             });
-            /**
-             * Edit button Event
-             */
-            $('#btn-edit').click(function () {
-                if (!table.$('tr.selected').hasClass('selected')) {
-                    $('#message-modal').modal('toggle');
-                    $('#message').html("Please select a product row for this operation !");
-                    $('#btn-ok').click(function () {
-                        location.href = 'index.html';
-                    });
-                } else {
-                    $('#newMedicine').modal('toggle');
-                    populateData(selected[0]);
-                }
-            });
+
         },
         error: function (result) {
             console.log(result);
