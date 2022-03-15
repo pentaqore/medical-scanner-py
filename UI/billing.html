@@ -1,0 +1,250 @@
+<html>
+
+<head>
+    <title>
+        Medical Stock Management System
+    </title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Data Table CSS and JS-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.css">
+
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
+
+    <!-- Self JS -->
+    <script src="includes\js\medical.js"></script>
+    <!-- Html 2 pdf conversion -->
+    <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+
+    <!-- self css -->
+    <link rel="stylesheet" href="includes/css/medical.css">
+
+    <style>
+        .invoice {
+            margin-bottom: 15px;
+            border-top: 1px solid;
+            border-bottom: 1px solid;
+            background: lightblue;
+            padding: 0 17px;
+        }
+
+
+
+        .border {
+            border: 1px solid #e5e5e5;
+        }
+    </style>
+</head>
+
+<script>
+    $(document).ready(function () {
+        console.log(localStorage.getItem('isLogin'));
+        if (localStorage.getItem('isLogin') == null || localStorage.getItem('isLogin') == 'false') {
+            location.href = 'login.html';
+        } else {
+            //fetch data of bill table
+            fetchBillTableData();
+        }
+
+        var isLogin = localStorage.getItem('isLogin');
+        var username = localStorage.getItem('username');
+        if (isLogin) {
+
+            $('.notLoggedIn').css('display', 'none');
+            $('.loggedIn').css('display', 'visible');
+            $('.username').html(username);
+        } else {
+            $('.loggedIn').css('display', 'none');
+            $('.notLoggedIn').css('display', 'visible');
+        }
+    });
+
+
+</script>
+
+<body>
+    <div class="container-fluid">
+
+        <!-- NAVBAR -->
+
+        <div class="row">
+
+            <nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top">
+                <!-- Brand -->
+                <a class="navbar-brand" href="index.html">Medical Scanner</a>
+
+                <!-- Toggler/collapsibe Button -->
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Navbar links -->
+                <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item ">
+                            <a class="nav-link" href="index.html">Dashboard </a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="billing.html">Billing<span class="sr-only">(current)</span></a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+
+                        <li class="nav-item notLoggedIn">
+                            <a class="nav-link" href="login.html">Login</a>
+                        </li>
+                        <li class="nav-item notLoggedIn">
+                            <a class="nav-link" href="register.html">Register</a>
+                        </li>
+
+                        <li class="nav-item loggedIn">
+                            <a class="nav-link username" href=""></a>
+                        </li>
+                        <li class="nav-item loggedIn">
+                            <a class="nav-link" href="logout.html">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <br><br><br>
+
+        <!-- PRODUCT TABLE  -->
+
+
+        <div class="row">
+
+            <div class="col-sm-12 px-5 py-0">
+                <span class="font-weight-bold h3">All Bills</span>
+                <div class="float-right">
+                    <button id="btn-print" class="btn btn-primary" data-toggle="modal">Print
+                        Bill</button>
+                    <!-- <button id="btn-edit" class="btn btn-success" data-toggle="modal">Edit</button>
+                    <button id="btn-delete" class="btn btn-danger " data-toggle="modal">Delete</button> -->
+                </div>
+            </div>
+            <div class="col-sm-12  px-5 py-3">
+
+                <table id="billTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Mobile Number</th>
+                            <th>Medicine</th>
+                            <th>Type</th>
+                            <th>Rate</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bill-table">
+
+                    </tbody>
+
+                </table>
+                <div id="result"></div>
+            </div>
+        </div>
+
+
+
+        <!-- Bill Generation MODAL -->
+        <div class="modal fade" id="bill-generation">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <!-- Modal Header  close tab button -->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="global-container" style="width: 50vw;">
+                        <div class="card  col">
+                            <div class="card-body">
+                                <div class="container" id="invoice">
+                                    <div class="row">
+
+                                        <div class="col border">
+                                            <div class="row">
+                                                <div class="col invoice text-center text-primary">
+                                                    <h2>Medical Store</h2>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+
+                                                <!-- <div class="col "> -->
+                                                <div class="col text-left">
+                                                    <p><strong>Customer Name: </strong>
+                                                    <p id="bill-cust-name"></p>
+                                                    </p>
+                                                    <p><strong>Mobile Number: </strong>
+                                                    <p id="mob-number"></p>
+                                                    </p>
+                                                </div>
+                                                <div class=" col text-center">
+                                                    <p><strong>Invoice No: </strong>
+                                                    <p id="invo-id"></p>
+                                                    </p>
+                                                    <p><strong>Date:</strong>
+                                                    <p id="date"></p>
+                                                    </p>
+                                                    <p>Pune</p>
+                                                </div>
+                                                <!-- </div> -->
+                                            </div>
+                                            <div class="row">
+                                                <div class="col well invoice-body">
+                                                    <table id="billPrintTable"
+                                                        class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Medicine</th>
+                                                                <th>Type</th>
+                                                                <th>Rate</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="billPrint-table">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-right mt-2 mb-2">Signature</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button id="btn-bill-cancel" type="reset" class="btn btn-secondary">Cancel</button>
+                        <button id="btn-gen-bill" type="button" onclick="generateBill()"
+                            class="btn btn-success">Generate bill</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    </script>
+</body>
+
+</html>
