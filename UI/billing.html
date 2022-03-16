@@ -148,7 +148,7 @@
                             <th>Name</th>
                             <th>Mobile Number</th>
                             <th>Medicine</th>
-                            <th>Type</th>
+                            <th>Quantity</th>
                             <th>Rate</th>
                             <th>Date</th>
                         </tr>
@@ -240,9 +240,11 @@
                                                     class="table table-striped table-bordered ">
                                                     <thead>
                                                         <tr>
+                                                            <th>Sr.NO</th>
                                                             <th>Medicine</th>
-                                                            <th>Type</th>
                                                             <th>Rate</th>
+                                                            <th>Quantity</th>
+                                                            <th> Total</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="billPrint-table">
@@ -251,7 +253,18 @@
                                             </div>
                                             <!-- </div> -->
                                             <div class="row">
-                                                <div class="col text-right mt-2 mb-2">Signature</div>
+                                                <div class="col text-right mt-2 mb-2">
+                                                    <div class="row text-right">
+                                                        <div class="col text-right mt-2 mb-2">
+                                                            <p><strong> Total: RS. </strong>
+                                                                <label id="total"></label>
+                                                            </p>
+                                                        </div>
+                                                    </div><br>
+                                                    <div class="row text-right">
+                                                        <div class="col text-right mt-2 mb-2">Signature</div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

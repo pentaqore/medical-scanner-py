@@ -171,8 +171,8 @@ function fetchBillTableData() {
             }
             console.log("RESULT", result);
             result = null;
-            resultTable = [{ id: 1, name: "ABC", mob_no: 9095968495, medicine: "patracetomol", type: "capsule", rate: 10, date: "15-03-2022" },
-            { id: 2, name: "DDRF", mob_no: 9095968495, medicine: "patracetomol", type: "capsule", rate: 10, date: "15-03-2022" }];
+            resultTable = [{ id: 1, name: "ABC", mob_no: 9095968495, medicine: "patracetomol", quantity: 4, rate: 10, date: "15-03-2022" },
+            { id: 2, name: "DDRF", mob_no: 9095968495, medicine: "patracetomol", quantity: 5, rate: 10, date: "15-03-2022" }];
             console.log(result);
             $('#billTable').DataTable({
                 "data": resultTable,
@@ -185,7 +185,7 @@ function fetchBillTableData() {
                     { data: 'name' },
                     { data: 'mob_no' },
                     { data: 'medicine' },
-                    { data: 'type' },
+                    { data: 'quantity' },
                     { data: 'rate' },
                     { data: 'date' }
                 ],
@@ -202,7 +202,7 @@ function fetchBillTableData() {
                     name: $(this).children("td:nth-child(2)").text(),
                     mob_no: $(this).children("td:nth-child(3)").text(),
                     medicine: $(this).children("td:nth-child(4)").text(),
-                    type: $(this).children("td:nth-child(5)").text(),
+                    quantity: $(this).children("td:nth-child(5)").text(),
                     rate: $(this).children("td:nth-child(6)").text(),
                     date: $(this).children("td:nth-child(7)").text()
                 }
@@ -230,6 +230,11 @@ function fetchBillTableData() {
              * Print button Event
              */
             $('#btn-print').click(function () {
+
+                let total = 0;
+                let subTotal = 0;
+                srNumber = 0
+
                 if (selected.length != 0) {
                     $('#bill-generation').modal('toggle');
                     $('#invo-id').text(selected[0].id);
@@ -244,12 +249,19 @@ function fetchBillTableData() {
                     });
                 }
 
-                resultPrintTable = [{ medicine: "dddd", type: "cap", rate: 20 }]
+                resultPrintTable = [{ sr_no: 1, medicine: "dddd", rate: 0, quantity: 0, total: 0 }]
+
 
 
                 for (let result of selected) {
-                    resultPrintTable.push({ medicine: result.medicine, type: result.type, rate: result.rate })
+                    srNumber = srNumber + 1;
+                    subTotal = parseInt(result.quantity) * parseFloat(result.rate);
+                    resultPrintTable.push({ sr_no: srNumber, medicine: result.medicine, rate: result.rate, quantity: result.quantity, total: subTotal })
+                    total = total + parseFloat(subTotal);
                 }
+
+
+                $('#total').text(total);
                 console.log("result ", resultPrintTable)
                 //populate data in table  here
                 $('#billPrintTable').DataTable({
@@ -261,9 +273,11 @@ function fetchBillTableData() {
                     searching: false,
                     "autoWidth": false,
                     columns: [
+                        { data: 'sr_no' },
                         { data: 'medicine' },
-                        { data: 'type' },
-                        { data: 'rate' }
+                        { data: 'rate' },
+                        { data: 'quantity' },
+                        { data: 'total' }
                     ],
                 });
                 // $("#billPrintTable").css("width", "100%");
