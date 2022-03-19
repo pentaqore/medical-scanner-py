@@ -148,34 +148,26 @@ function fetchBillTableData() {
 
 
     $.ajax({
-        url: 'http://localhost:8000/items',
+        url: 'http://localhost:8000/bills',
         type: 'GET',
         dataType: 'json',
         contentType: "application/json; charset=utf-8",
         data: {},
         success: function (result) {
-            for (let i = 0; i < result.length; i++) {
-                switch (result[i].type) {
-                    case 'c': result[i].type = 'Capsule';
-                        break;
-                    case 't': result[i].type = 'Tablet';
-                        break;
-                    case 's': result[i].type = 'Syrup';
-                        break;
-                    case 'i': result[i].type = 'Injectible';
-                        break;
-                    default:
-                        break;
-                }
-
-            }
+            //    date: "2022-03-09T10:14:18Z"
+            // id: 1
+            // medicine: "Paracetamol"
+            // mobile_no: "1234567890"
+            // name: "Dany"
+            // qunatity: 6
+            // rate: "10.00"
             console.log("RESULT", result);
-            result = null;
-            resultTable = [{ id: 1, name: "ABC", mob_no: 9095968495, medicine: "patracetomol", quantity: 4, rate: 10, date: "15-03-2022" },
-            { id: 2, name: "DDRF", mob_no: 9095968495, medicine: "patracetomol", quantity: 5, rate: 10, date: "15-03-2022" }];
+            // result = null;
+            // resultTable = [{ id: 1, name: "ABC", mob_no: 9095968495, medicine: "patracetomol", quantity: 4, rate: 10, date: "15-03-2022" },
+            // { id: 2, name: "DDRF", mob_no: 9095968495, medicine: "patracetomol", quantity: 5, rate: 10, date: "15-03-2022" }];
             console.log(result);
             $('#billTable').DataTable({
-                "data": resultTable,
+                "data": result,
                 "destroy": true,
                 "paging": true,
                 "ordering": true,
@@ -183,9 +175,9 @@ function fetchBillTableData() {
                 columns: [
                     { data: 'id' },
                     { data: 'name' },
-                    { data: 'mob_no' },
+                    { data: 'mobile_no' },
                     { data: 'medicine' },
-                    { data: 'quantity' },
+                    { data: 'qunatity' },
                     { data: 'rate' },
                     { data: 'date' }
                 ],
@@ -249,7 +241,7 @@ function fetchBillTableData() {
                     });
                 }
 
-                resultPrintTable = [{ sr_no: 1, medicine: "dddd", rate: 0, quantity: 0, total: 0 }]
+                resultPrintTable = []
 
 
 

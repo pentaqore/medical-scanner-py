@@ -38,3 +38,25 @@ class Items(models.Model):
         jsonObj['content'] = self.content
         jsonObj['type'] = self.type
         return jsonObj
+
+
+
+        
+class Bill(models.Model):
+    name = models.CharField(max_length=200)
+    mobile_no = models.CharField(max_length=10)
+    medicine = models.CharField(max_length=500)
+    qunatity = models.IntegerField()
+    rate = models.DecimalField(decimal_places=2, max_digits=5)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def toJSON(self):
+        jsonObj = {}
+        jsonObj['id'] = self.id
+        jsonObj['name'] = self.name
+        jsonObj['mobile_no'] = self.mobile_no
+        jsonObj['medicine'] = self.medicine
+        jsonObj['qunatity'] = self.qunatity
+        jsonObj['rate'] = self.rate
+        jsonObj['date'] = self.date
+        return jsonObj

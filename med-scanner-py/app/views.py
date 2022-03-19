@@ -2,7 +2,7 @@ from django.views import View
 from django.http import JsonResponse
 import json
 from django.shortcuts import render
-from .models import Users, Items
+from .models import Users, Items ,Bill
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
@@ -142,7 +142,6 @@ class ItemOperations(View):
         return JsonResponse(data, status=200, safe=False)
 
     def put(self, request):
-
         
         data = json.loads(request.body.decode("utf-8"))
         id = data.get('id')
@@ -161,3 +160,19 @@ class ItemOperations(View):
             "status": 200
         }
         return JsonResponse(data, status=200)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class BillOperations(View):    
+    def get(self, request):
+        # data = json.loads(request.body.decode("utf-8"))
+        data = []
+
+        try:
+            bills = Bill.objects.all()
+            for bill in bills:
+                jsonObj = Bill.toJSON(bill)
+                data.append(jsonObj)
+        except bills.DoesNotExist:
+            bills = None
+        return JsonResponse(data, status=200, safe=False)
