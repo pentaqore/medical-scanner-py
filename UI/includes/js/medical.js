@@ -145,7 +145,7 @@ function fetchBillTableData() {
     var isLogin = localStorage.getItem('isLogin');
     var selected = [];
 
-
+    //TODO: Need to validate flow
 
     $.ajax({
         url: 'http://localhost:8000/bills',
@@ -154,17 +154,8 @@ function fetchBillTableData() {
         contentType: "application/json; charset=utf-8",
         data: {},
         success: function (result) {
-            //    date: "2022-03-09T10:14:18Z"
-            // id: 1
-            // medicine: "Paracetamol"
-            // mobile_no: "1234567890"
-            // name: "Dany"
-            // qunatity: 6
-            // rate: "10.00"
+
             console.log("RESULT", result);
-            // result = null;
-            // resultTable = [{ id: 1, name: "ABC", mob_no: 9095968495, medicine: "patracetomol", quantity: 4, rate: 10, date: "15-03-2022" },
-            // { id: 2, name: "DDRF", mob_no: 9095968495, medicine: "patracetomol", quantity: 5, rate: 10, date: "15-03-2022" }];
             console.log(result);
             $('#billTable').DataTable({
                 "data": result,
