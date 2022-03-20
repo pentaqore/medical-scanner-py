@@ -61,8 +61,9 @@ function fetchFranchiseTableData() {
                 var data = {
                     id: $(this).children("td:nth-child(1)").text(),
                     name: $(this).children("td:nth-child(2)").text(),
-                    rate: $(this).children("td:nth-child(3)").text(),
-                    available_qunatity: $(this).children("td:nth-child(4)").text(),
+                    available_qunatity: $(this).children("td:nth-child(3)").text(),
+                    rate: $(this).children("td:nth-child(4)").text(),
+
                     content: $(this).children("td:nth-child(5)").text(),
                     type: $(this).children("td:nth-child(6)").text()
                 }
@@ -148,7 +149,7 @@ function fetchBillTableData() {
     //TODO: Need to validate flow
 
     $.ajax({
-        url: 'http://localhost:8000/bills',
+        url: 'http://localhost:8000/transactions',
         type: 'GET',
         dataType: 'json',
         contentType: "application/json; charset=utf-8",
@@ -167,9 +168,6 @@ function fetchBillTableData() {
                     { data: 'id' },
                     { data: 'name' },
                     { data: 'mobile_no' },
-                    { data: 'medicine' },
-                    { data: 'qunatity' },
-                    { data: 'rate' },
                     { data: 'date' }
                 ],
             });
@@ -184,10 +182,7 @@ function fetchBillTableData() {
                     id: $(this).children("td:nth-child(1)").text(),
                     name: $(this).children("td:nth-child(2)").text(),
                     mob_no: $(this).children("td:nth-child(3)").text(),
-                    medicine: $(this).children("td:nth-child(4)").text(),
-                    quantity: $(this).children("td:nth-child(5)").text(),
-                    rate: $(this).children("td:nth-child(6)").text(),
-                    date: $(this).children("td:nth-child(7)").text()
+                    date: $(this).children("td:nth-child(4)").text()
                 }
 
                 if ($(this).hasClass('selected')) {
@@ -199,8 +194,8 @@ function fetchBillTableData() {
                     }
                 }
                 else {
-                    // selected = [];
-                    // table.$('tr.selected').removeClass('selected');
+                    selected = [];
+                    table.$('tr.selected').removeClass('selected');
                     $(this).addClass('selected');
                     selected.push(data);
                 }
@@ -219,64 +214,75 @@ function fetchBillTableData() {
                 srNumber = 0
 
                 if (selected.length != 0) {
-                    $('#bill-generation').modal('toggle');
-                    $('#invo-id').text(selected[0].id);
-                    $('#bill-cust-name').text(selected[0].name);
-                    $('#mob-number').text(selected[0].mob_no);
-                    $('#date').text(selected[0].date);
+                    var transactionId = selected[0].id;
+                    let url = "http://localhost:8000/bills?tansact_id=" + transactionId;
+
+                    console.log(selected[0]);
+                    //Bills Print Api
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        dataType: 'json',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(
+                        ),
+                        success: function (result) {
+                            console.log("result ", result)
+                            resultPrintTable = [];
+                            if (selected.length != 0) {
+                                $('#bill-generation').modal('toggle');
+                                $('#invo-id').text(selected[0].id);
+                                $('#bill-cust-name').text(selected[0].name);
+                                $('#mob-number').text(selected[0].mob_no);
+                                $('#date').text(selected[0].date);
+                            }
+
+                            if (result.length != 0) {
+
+                                for (let res of result) {
+                                    srNumber = srNumber + 1;
+                                    subTotal = parseInt(res.qunatity) * parseFloat(res.rate);
+                                    resultPrintTable.push({ sr_no: srNumber, medicine: res.medicine, rate: res.rate, quantity: res.qunatity, total: subTotal })
+                                    total = total + parseFloat(subTotal);
+                                }
+                                $('#total').text(total);
+
+                                //populate data in table  here
+                                $('#billPrintTable').DataTable({
+                                    "data": resultPrintTable,
+                                    "destroy": false,
+                                    "paging": false,
+                                    "ordering": false,
+                                    "info": false,
+                                    searching: false,
+                                    "autoWidth": false,
+                                    columns: [
+                                        { data: 'sr_no' },
+                                        { data: 'medicine' },
+                                        { data: 'rate' },
+                                        { data: 'quantity' },
+                                        { data: 'total' }
+                                    ],
+                                });
+                                // $("#billPrintTable").css("width", "100%");
+                                var table = $('#billPrintTable').DataTable();
+                            } else {
+                                console.log("INSIDE TABLE FRESH");
+                                table.ajax.reload();
+                                // $('#billPrintTable').text("No data available");
+                            }
+                        }
+                    });
                 } else {
                     $('#message-modal').modal('toggle');
-                    $('#message').html("Please select a product row for this operation !");
+                    $('#message').html("Please select a transaction row for this operation !");
                     $('#btn-ok').click(function () {
                         location.href = 'billing.html';
                     });
                 }
-
-                resultPrintTable = []
-
-
-
-                for (let result of selected) {
-                    srNumber = srNumber + 1;
-                    subTotal = parseInt(result.quantity) * parseFloat(result.rate);
-                    resultPrintTable.push({ sr_no: srNumber, medicine: result.medicine, rate: result.rate, quantity: result.quantity, total: subTotal })
-                    total = total + parseFloat(subTotal);
-                }
-
-
-                $('#total').text(total);
-                console.log("result ", resultPrintTable)
-                //populate data in table  here
-                $('#billPrintTable').DataTable({
-                    "data": resultPrintTable,
-                    "destroy": false,
-                    "paging": false,
-                    "ordering": false,
-                    "info": false,
-                    searching: false,
-                    "autoWidth": false,
-                    columns: [
-                        { data: 'sr_no' },
-                        { data: 'medicine' },
-                        { data: 'rate' },
-                        { data: 'quantity' },
-                        { data: 'total' }
-                    ],
-                });
-                // $("#billPrintTable").css("width", "100%");
-                var table = $('#billPrintTable').DataTable();
             });
 
-            // /**
-            //  * Delete confirmation button Event
-            //  */
-            // $('#btn-delete-confirm').click(function () {
-            //     generateBill(selected[0]);
-            // });
 
-            // $('#btn-cancel').click(function () {
-            //     location.href = 'index.html';
-            // });
             $('#btn-bill-cancel').click(function () {
                 location.href = 'billing.html';
             });
@@ -287,6 +293,17 @@ function fetchBillTableData() {
         }
     });
 }
+
+
+
+
+
+
+
+
+
+
+
 function generateBill() {
     // var medicine = $('#name').val();
     // var available_quantity = $('#available_quantity').val();
@@ -300,10 +317,8 @@ function generateBill() {
     var rate = "sdfs";
     var type = "sdfs";
     var jwtToken = localStorage.getItem('jwtToken');
-
     const element = document.getElementById("invoice");
-    html2pdf().from(element).save();
-
+    html2pdf().from(element).save("Print.pdf");
     console.log();
 }
 
@@ -312,7 +327,7 @@ function generateBill() {
  * @param Array of selectedRecords 
  */
 function deleteMedicine(medicine) {
-
+    console.log("=======", medicine)
     $.ajax({
         url: "http://localhost:8000/item",
         type: 'DELETE',
@@ -357,7 +372,7 @@ function deleteMedicine(medicine) {
  */
 
 function populateData(medicine) {
-
+    console.log(medicine)
 
     switch (medicine.type) {
         case 'Capsule': medicine.type = 'c';

@@ -2,7 +2,7 @@ from django.views import View
 from django.http import JsonResponse
 import json
 from django.shortcuts import render
-from .models import Users, Items ,Bill
+from .models import Users, Items ,Bill ,Transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
@@ -165,14 +165,37 @@ class ItemOperations(View):
 @method_decorator(csrf_exempt, name='dispatch')
 class BillOperations(View):    
     def get(self, request):
+        
         # data = json.loads(request.body.decode("utf-8"))
+        # print(data)
+        tansact_id = request.GET.get('tansact_id', None)
+        print(tansact_id)
         data = []
-
         try:
-            bills = Bill.objects.all()
+            # if tansact_id is not None:
+            bills =  Bill.objects.filter(tansact_id=tansact_id)
+           
             for bill in bills:
                 jsonObj = Bill.toJSON(bill)
                 data.append(jsonObj)
         except bills.DoesNotExist:
             bills = None
         return JsonResponse(data, status=200, safe=False)
+    
+    
+@method_decorator(csrf_exempt, name='dispatch')    
+class TransactionOperations(View):    
+    def get(self, request):
+        # data = json.loads(request.body.decode("utf-8"))
+        data = []
+
+        try:
+            transactions = Transaction.objects.all()
+            for transaction in transactions:
+                jsonObj = Transaction.toJSON(transaction)
+                data.append(jsonObj)
+        except transactions.DoesNotExist:
+            transactions = None
+        return JsonResponse(data, status=200, safe=False)
+    
+ 
