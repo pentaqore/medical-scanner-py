@@ -2,7 +2,7 @@ from django.views import View
 from django.http import JsonResponse
 import json
 from django.shortcuts import render
-from .models import Users, Items ,Bill ,Transaction
+from .models import Users, Items, Bill, Transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
@@ -84,6 +84,7 @@ class ItemsOperations(View):
             items = None
         return JsonResponse(data, status=200, safe=False)
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class ItemOperations(View):
     def post(self, request):
@@ -114,18 +115,20 @@ class ItemOperations(View):
     def get(self, request):
         id = request.GET.get('id', None)
         name = request.GET.get('name', None)
-        items = None
+        item = None
 
         try:
             if id is not None:
                 items = Items.objects.get(id=id)
+                item = Items.toJSON(items)
             else:
                 if name is not None:
                     items = Items.objects.get(name=name)
+                    item = Items.toJSON(items)
         except Items.DoesNotExist:
-            items = None
+            item = None
 
-        return JsonResponse(items, status=200, safe=False)
+        return JsonResponse(item, status=200, safe=False)
 
     def delete(self, request):
         data = json.loads(request.body.decode("utf-8"))
@@ -135,14 +138,14 @@ class ItemOperations(View):
         items = Items.objects.filter(id=id).delete()
 
         data = {
-            
+
             'msg': 'Delete Success',
             'status': 200
         }
         return JsonResponse(data, status=200, safe=False)
 
     def put(self, request):
-        
+
         data = json.loads(request.body.decode("utf-8"))
         id = data.get('id')
         name = data.get('name')
@@ -152,8 +155,9 @@ class ItemOperations(View):
         type = data.get('type')
 
         # item = Items.objects.objects.update_or_create(name=name, available_quantity=available_quantity, rate=rate, content=content, type=type, defaults={id: id})
-        
-        item = Items.objects.filter(id=id).update(name=name, available_qunatity=available_quantity, rate=rate, content=content, type=type)
+
+        item = Items.objects.filter(id=id).update(
+            name=name, available_qunatity=available_quantity, rate=rate, content=content, type=type)
 
         data = {
             "message": f"Item Updated Successfully with name: {name}",
@@ -163,9 +167,9 @@ class ItemOperations(View):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class BillOperations(View):    
+class BillOperations(View):
     def get(self, request):
-        
+
         # data = json.loads(request.body.decode("utf-8"))
         # print(data)
         tansact_id = request.GET.get('tansact_id', None)
@@ -173,18 +177,18 @@ class BillOperations(View):
         data = []
         try:
             # if tansact_id is not None:
-            bills =  Bill.objects.filter(tansact_id=tansact_id)
-           
+            bills = Bill.objects.filter(tansact_id=tansact_id)
+
             for bill in bills:
                 jsonObj = Bill.toJSON(bill)
                 data.append(jsonObj)
         except bills.DoesNotExist:
             bills = None
         return JsonResponse(data, status=200, safe=False)
-    
-    
-@method_decorator(csrf_exempt, name='dispatch')    
-class TransactionOperations(View):    
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class TransactionOperations(View):
     def get(self, request):
         # data = json.loads(request.body.decode("utf-8"))
         data = []
@@ -197,5 +201,39 @@ class TransactionOperations(View):
         except transactions.DoesNotExist:
             transactions = None
         return JsonResponse(data, status=200, safe=False)
-    
- 
+
+    def post(self, request):
+        initialData = json.loads(request.body.decode("utf-8"))
+        data = initialData.get('nameValuePairs')
+        print('##################')
+        print(data)
+        name = data.get('name')
+        mobile_no = data.get('mobile_no')
+        itemId = data.get('itemId')
+        quantity = data.get('quantity')
+
+        transactionData = {
+            'name': name,
+            'mobile_no': mobile_no,
+        }
+
+        transaction = Transaction.objects.create(**transactionData)
+
+        # fetch item details using id
+        itemDetails = Items.objects.get(id=itemId)
+
+        # add items to bill
+        billItemData = {
+            'tansact_id': transaction.id,
+            'medicineId': itemId,
+            'qunatity': quantity,
+            'rate': itemDetails.rate
+        }
+        billItem = Bill.objects.create(**billItemData)
+
+        data = {
+            # "message": f"Bill successfully generated for: {transactionData}",
+            "message": f"Bill successfully generated for",
+            "status": 201
+        }
+        return JsonResponse(data, status=201)

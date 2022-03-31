@@ -18,7 +18,7 @@ A. Run BackEnd
 3. Enter command: pip install -r requirements.txt
 4. Enter command: python manage.py makemigrations 
 5. Enter command: python manage.py migrate
-6. Enter command: python manage.py runserver
+6. Enter command: python manage.py runserver 0.0.0.0:8000
 
 This will start back end application on localhost:8000
 

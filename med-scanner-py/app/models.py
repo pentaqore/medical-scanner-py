@@ -40,8 +40,6 @@ class Items(models.Model):
         return jsonObj
 
 
-
-
 # class Bill(models.Model):
 #     name = models.CharField(max_length=200)
 #     mobile_no = models.CharField(max_length=10)
@@ -62,10 +60,9 @@ class Items(models.Model):
 #         return jsonObj
 
 
-
 class Bill(models.Model):
     tansact_id = models.IntegerField()
-    medicine = models.CharField(max_length=500)
+    medicineId = models.CharField(max_length=500)
     qunatity = models.IntegerField()
     rate = models.DecimalField(decimal_places=2, max_digits=5)
 
@@ -73,16 +70,17 @@ class Bill(models.Model):
         jsonObj = {}
         jsonObj['id'] = self.id
         jsonObj['tansact_id'] = self.tansact_id
-        jsonObj['medicine'] = self.medicine
+        jsonObj['medicineId'] = self.medicineId
         jsonObj['qunatity'] = self.qunatity
         jsonObj['rate'] = self.rate
         return jsonObj
+
 
 class Transaction(models.Model):
     name = models.CharField(max_length=200)
     mobile_no = models.CharField(max_length=10)
     date = models.DateTimeField(auto_now_add=True)
-    
+
     def toJSON(self):
         jsonObj = {}
         jsonObj['id'] = self.id
@@ -90,4 +88,3 @@ class Transaction(models.Model):
         jsonObj['mobile_no'] = self.mobile_no
         jsonObj['date'] = self.date
         return jsonObj
-     
