@@ -1,3 +1,4 @@
+from types import new_class
 from django.views import View
 from django.http import JsonResponse
 import json
@@ -181,6 +182,7 @@ class BillOperations(View):
 
             for bill in bills:
                 jsonObj = Bill.toJSON(bill)
+                print(jsonObj)
                 data.append(jsonObj)
         except bills.DoesNotExist:
             bills = None
@@ -231,9 +233,14 @@ class TransactionOperations(View):
         }
         billItem = Bill.objects.create(**billItemData)
 
+        new_quantity = itemDetails.available_qunatity - quantity
+
+        # decrease Item available quantity
+        item = Items.objects.filter(id=itemId).update(
+            available_qunatity=new_quantity)
+
         data = {
-            # "message": f"Bill successfully generated for: {transactionData}",
-            "message": f"Bill successfully generated for",
+            "message": f"Bill successfully generated for: {transactionData}",
             "status": 201
         }
         return JsonResponse(data, status=201)

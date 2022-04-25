@@ -18,7 +18,9 @@ function fetchFranchiseTableData() {
         contentType: "application/json; charset=utf-8",
         data: {},
         success: function (result) {
+            console.log(result);
             for (let i = 0; i < result.length; i++) {
+                result[i].srNo = i + 1;
                 switch (result[i].type) {
                     case 'c': result[i].type = 'Capsule';
                         break;
@@ -33,7 +35,7 @@ function fetchFranchiseTableData() {
                 }
 
             }
-
+            console.log(result);
 
             $('#dashboardTable').DataTable({
                 "data": result,
@@ -42,6 +44,7 @@ function fetchFranchiseTableData() {
                 "ordering": true,
                 "info": true,
                 columns: [
+                    { data: 'srNo' },
                     { data: 'id' },
                     { data: 'name' },
                     { data: 'available_qunatity' },
@@ -59,13 +62,13 @@ function fetchFranchiseTableData() {
             $('#dashboardTable tbody').on('click', 'tr', function () {
 
                 var data = {
-                    id: $(this).children("td:nth-child(1)").text(),
-                    name: $(this).children("td:nth-child(2)").text(),
-                    available_qunatity: $(this).children("td:nth-child(3)").text(),
-                    rate: $(this).children("td:nth-child(4)").text(),
+                    id: $(this).children("td:nth-child(2)").text(),
+                    name: $(this).children("td:nth-child(3)").text(),
+                    available_qunatity: $(this).children("td:nth-child(4)").text(),
+                    rate: $(this).children("td:nth-child(5)").text(),
 
-                    content: $(this).children("td:nth-child(5)").text(),
-                    type: $(this).children("td:nth-child(6)").text()
+                    content: $(this).children("td:nth-child(6)").text(),
+                    type: $(this).children("td:nth-child(7)").text()
                 }
 
                 if ($(this).hasClass('selected')) {
@@ -179,10 +182,10 @@ function fetchBillTableData() {
              */
             $('#billTable tbody').on('click', 'tr', function () {
                 var data = {
-                    id: $(this).children("td:nth-child(1)").text(),
-                    name: $(this).children("td:nth-child(2)").text(),
-                    mob_no: $(this).children("td:nth-child(3)").text(),
-                    date: $(this).children("td:nth-child(4)").text()
+                    id: $(this).children("td:nth-child(2)").text(),
+                    name: $(this).children("td:nth-child(3)").text(),
+                    mob_no: $(this).children("td:nth-child(4)").text(),
+                    date: $(this).children("td:nth-child(5)").text()
                 }
 
                 if ($(this).hasClass('selected')) {
@@ -297,13 +300,6 @@ function fetchBillTableData() {
 
 
 
-
-
-
-
-
-
-
 function generateBill() {
     // var medicine = $('#name').val();
     // var available_quantity = $('#available_quantity').val();
@@ -387,6 +383,7 @@ function populateData(medicine) {
             break;
     }
 
+    console.log(medicine.type);
 
     if (medicine) {
         $('#id').val(medicine.id);
