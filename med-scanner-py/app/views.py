@@ -41,9 +41,22 @@ class User(View):
 class Login(View):
     def post(self, request):
 
+        userName = ''
+        password = ''
+        fromAndroid = ''
+
         data = json.loads(request.body.decode("utf-8"))
-        userName = data.get('userName')
-        password = data.get('password')
+
+        dataFromAdroid = data.get('nameValuePairs')
+        if dataFromAdroid is not None:
+            fromAndroid = dataFromAdroid.get('fromAndroid')
+
+        if fromAndroid:
+            userName = dataFromAdroid.get('userName')
+            password = dataFromAdroid.get('password')
+        else:
+            userName = data.get('userName')
+            password = data.get('password')
 
         try:
             user = Users.objects.get(userName=userName)
@@ -70,7 +83,7 @@ class Login(View):
         return JsonResponse(data, status=200)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
+@ method_decorator(csrf_exempt, name='dispatch')
 class ItemsOperations(View):
     def get(self, request):
         # data = json.loads(request.body.decode("utf-8"))
@@ -86,7 +99,7 @@ class ItemsOperations(View):
         return JsonResponse(data, status=200, safe=False)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
+@ method_decorator(csrf_exempt, name='dispatch')
 class ItemOperations(View):
     def post(self, request):
         data = json.loads(request.body.decode("utf-8"))
@@ -167,7 +180,7 @@ class ItemOperations(View):
         return JsonResponse(data, status=200)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
+@ method_decorator(csrf_exempt, name='dispatch')
 class BillOperations(View):
     def get(self, request):
 
@@ -189,7 +202,7 @@ class BillOperations(View):
         return JsonResponse(data, status=200, safe=False)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
+@ method_decorator(csrf_exempt, name='dispatch')
 class TransactionOperations(View):
     def get(self, request):
         # data = json.loads(request.body.decode("utf-8"))
