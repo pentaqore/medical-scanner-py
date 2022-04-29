@@ -182,10 +182,10 @@ function fetchBillTableData() {
              */
             $('#billTable tbody').on('click', 'tr', function () {
                 var data = {
-                    id: $(this).children("td:nth-child(2)").text(),
-                    name: $(this).children("td:nth-child(3)").text(),
-                    mob_no: $(this).children("td:nth-child(4)").text(),
-                    date: $(this).children("td:nth-child(5)").text()
+                    id: $(this).children("td:nth-child(1)").text(),
+                    name: $(this).children("td:nth-child(2)").text(),
+                    mob_no: $(this).children("td:nth-child(3)").text(),
+                    date: $(this).children("td:nth-child(4)").text()
                 }
 
                 if ($(this).hasClass('selected')) {
@@ -218,6 +218,7 @@ function fetchBillTableData() {
 
                 if (selected.length != 0) {
                     var transactionId = selected[0].id;
+                    console.log(transactionId);
                     let url = "http://localhost:8000/bills?tansact_id=" + transactionId;
 
                     console.log(selected[0]);
