@@ -98,6 +98,26 @@ class ItemsOperations(View):
             items = None
         return JsonResponse(data, status=200, safe=False)
 
+    # api to get all items details by item names in body array
+    def post(self, request):
+        data = json.loads(request.body.decode("utf-8"))
+        print(data)
+
+        resp = []
+
+        try:
+            for itemName in data:
+                items = Items.objects.filter(name=itemName).first()
+                print(items)
+                if items is not None:
+                    item = Items.toJSON(items)
+                    resp.append(item)
+        except Items.DoesNotExist:
+            print("Error")
+            items = None
+
+        return JsonResponse(resp, status=200, safe=False)
+
 
 @ method_decorator(csrf_exempt, name='dispatch')
 class ItemOperations(View):
