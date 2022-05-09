@@ -103,7 +103,6 @@ function fetchFranchiseTableData() {
                     $('#delete-med-confirmation').modal('toggle');
                 }
 
-
             });
 
             /**
@@ -115,6 +114,9 @@ function fetchFranchiseTableData() {
 
             $('#btn-cancel').click(function () {
                 location.href = 'index.html';
+            });
+            $('#btn-modal-cancel').click(function () {
+                location.href = 'billing.html';
             });
             $('#btn-bill-cancel').click(function () {
                 location.href = 'billing.html';
@@ -290,6 +292,10 @@ function fetchBillTableData() {
 
 
             $('#btn-bill-cancel').click(function () {
+                location.href = 'billing.html';
+            });
+
+            $('#btn-modal-cancel').click(function () {
                 location.href = 'billing.html';
             });
 
