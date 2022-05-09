@@ -233,11 +233,13 @@ function fetchBillTableData() {
                         success: function (result) {
                             console.log("result ", result)
                             resultPrintTable = [];
+                            // var billDate = new Date(selected[0].date);
                             if (selected.length != 0) {
                                 $('#bill-generation').modal('toggle');
                                 $('#invo-id').text(selected[0].id);
                                 $('#bill-cust-name').text(selected[0].name);
                                 $('#mob-number').text(selected[0].mob_no);
+                                // $('#date').text(billDate.toDateString());
                                 $('#date').text(selected[0].date);
                             }
 

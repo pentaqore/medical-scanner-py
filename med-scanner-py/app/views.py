@@ -16,7 +16,6 @@ import json
 class User(View):
     def post(self, request):
 
-        print(request.body)
         data = json.loads(request.body.decode("utf-8"))
         userName = data.get('userName')
         password = data.get('password')
@@ -101,17 +100,17 @@ class ItemsOperations(View):
     # api to get all items details by item names in body array
     def post(self, request):
         data = json.loads(request.body.decode("utf-8"))
-        print(data)
 
         resp = []
 
         try:
             for itemName in data:
                 items = Items.objects.filter(name=itemName).first()
-                print(items)
                 if items is not None:
                     item = Items.toJSON(items)
-                    resp.append(item)
+                else:
+                    item = {"name": itemName, "available_qunatity": 0}
+                resp.append(item)
         except Items.DoesNotExist:
             print("Error")
             items = None
@@ -124,7 +123,7 @@ class ItemOperations(View):
     def post(self, request):
         data = json.loads(request.body.decode("utf-8"))
         print(data)
-        name = data.get('name')
+        name = data.get('name').lower()
         available_quantity = data.get('available_quantity')
         rate = data.get('rate')
         content = data.get('content')
@@ -207,15 +206,16 @@ class BillOperations(View):
         # data = json.loads(request.body.decode("utf-8"))
         # print(data)
         tansact_id = request.GET.get('tansact_id', None)
-        print(tansact_id)
         data = []
         try:
             # if tansact_id is not None:
             bills = Bill.objects.filter(tansact_id=tansact_id)
 
             for bill in bills:
+
+                item = Items.objects.get(id=bill.medicineId)
                 jsonObj = Bill.toJSON(bill)
-                print(jsonObj)
+                jsonObj['medicine'] = item.name
                 data.append(jsonObj)
         except bills.DoesNotExist:
             bills = None
@@ -238,14 +238,13 @@ class TransactionOperations(View):
         return JsonResponse(data, status=200, safe=False)
 
     def post(self, request):
+        # TODO: take item ids and qty in array of object and add into database accordingly
         initialData = json.loads(request.body.decode("utf-8"))
         data = initialData.get('nameValuePairs')
-        print('##################')
-        print(data)
         name = data.get('name')
         mobile_no = data.get('mobile_no')
-        itemId = data.get('itemId')
-        quantity = data.get('quantity')
+        medicinesObj = data.get('medicines')
+        medicines = medicinesObj.get('values')
 
         transactionData = {
             'name': name,
@@ -254,23 +253,28 @@ class TransactionOperations(View):
 
         transaction = Transaction.objects.create(**transactionData)
 
-        # fetch item details using id
-        itemDetails = Items.objects.get(id=itemId)
+        for medicineObj in medicines:
+            medicine = medicineObj.get('nameValuePairs')
 
-        # add items to bill
-        billItemData = {
-            'tansact_id': transaction.id,
-            'medicineId': itemId,
-            'qunatity': quantity,
-            'rate': itemDetails.rate
-        }
-        billItem = Bill.objects.create(**billItemData)
+            # fetch item details using id
+            itemDetails = Items.objects.get(name=medicine.get('medicineName'))
 
-        new_quantity = itemDetails.available_qunatity - quantity
+            # add items to bill
+            billItemData = {
+                'tansact_id': transaction.id,
+                'medicineId': itemDetails.id,
+                'qunatity': medicine.get('medicineQuantity'),
+                'rate': itemDetails.rate
+            }
 
-        # decrease Item available quantity
-        item = Items.objects.filter(id=itemId).update(
-            available_qunatity=new_quantity)
+            billItem = Bill.objects.create(**billItemData)
+
+            new_quantity = itemDetails.available_qunatity - \
+                medicine.get('medicineQuantity')
+
+            # decrease Item available quantity
+            item = Items.objects.filter(id=itemDetails.id).update(
+                available_qunatity=new_quantity)
 
         data = {
             "message": f"Bill successfully generated for: {transactionData}",

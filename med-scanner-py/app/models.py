@@ -1,5 +1,6 @@
 from ssl import create_default_context
 from django.db import models
+from datetime import datetime
 import json
 
 # Create your models here.
@@ -86,5 +87,5 @@ class Transaction(models.Model):
         jsonObj['id'] = self.id
         jsonObj['name'] = self.name
         jsonObj['mobile_no'] = self.mobile_no
-        jsonObj['date'] = self.date
+        jsonObj['date'] = self.date.strftime("%d/%m/%Y")
         return jsonObj
